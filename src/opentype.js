@@ -138,8 +138,8 @@ function uncompressTable (data, tableEntry) {
       throw new Error('Decompression error: ' + tableEntry.tag + ' decompressed length doesn\'t match recorded length')
     }
 
-    const data = new DataView(outBuffer.buffer, 0)
-    return { data, offset: 0 }
+    const view = new DataView(outBuffer.buffer, 0)
+    return { data: view, offset: 0 }
   } else {
     return { data, offset: tableEntry.offset }
   }
