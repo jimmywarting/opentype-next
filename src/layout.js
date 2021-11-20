@@ -117,14 +117,13 @@ class Layout {
   /**
    * Returns all LangSysRecords in the given script.
    * @instance
-   * @param {string} [script='DFLT']
-   * @param {boolean} create - forces the creation of this script table if it doesn't exist.
+   * @param script - The tag of the script
+   * @param create - Forces the creation of this script table if it doesn't exist.
    * @return {Object} An object with tag and script properties.
    */
-  getScriptTable (script, create) {
+  getScriptTable (script = 'DFLT', create = false) {
     const layout = this.getTable(create)
     if (layout) {
-      script = script || 'DFLT'
       const scripts = layout.scripts
       const pos = searchTag(layout.scripts, script)
       if (pos >= 0) {
@@ -147,14 +146,14 @@ class Layout {
    * Returns a language system table
    * @instance
    * @param {string} [script='DFLT']
-   * @param {string} [language='dlft']
-   * @param {boolean} create - forces the creation of this langSysTable if it doesn't exist.
+   * @param language - The tag of the language system
+   * @param create - Forces the creation of this langSysTable if it doesn't exist.
    * @return {Object}
    */
-  getLangSysTable (script, language, create) {
+  getLangSysTable (script, language = 'dflt', create = false) {
     const scriptTable = this.getScriptTable(script, create)
     if (scriptTable) {
-      if (!language || language === 'dflt' || language === 'DFLT') {
+      if (language === 'dflt' || language === 'DFLT') {
         return scriptTable.defaultLangSys
       }
       const pos = searchTag(scriptTable.langSysRecords, language)
