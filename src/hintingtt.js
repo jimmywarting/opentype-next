@@ -91,9 +91,7 @@ class Hinting {
         // This is used by fonts to define functions.
         State.prototype = defaultState
 
-        fpgmState =
-          this._fpgmState =
-          new State('fpgm', font.tables.fpgm)
+        fpgmState = this._fpgmState = new State('fpgm', font.tables.fpgm)
 
         fpgmState.funcs = []
         fpgmState.font = font
@@ -116,9 +114,8 @@ class Hinting {
       // This is used by fonts to set cvt values
       // depending on to be rendered font size.
       State.prototype = fpgmState
-      prepState =
-        this._prepState =
-        new State('prep', font.tables.prep)
+
+      prepState = this._prepState = prepState = new State('prep', font.tables.prep)
 
       prepState.ppem = ppem
 
@@ -166,9 +163,10 @@ class Hinting {
   }
 }
 
-/*
-* Not rounding.
-*/
+/**
+ * Not rounding.
+ * @param {number} v
+ */
 function roundOff (v) {
   return v
 }
@@ -253,7 +251,7 @@ const xUnitVector = {
 
   // Gets the projected distance between two points.
   // o1/o2 ... if true, respective original position is used.
-  distance: function (p1, p2, o1, o2) {
+  distance (p1, p2, o1, o2) {
     return (o1 ? p1.xo : p1.x) - (o2 ? p2.xo : p2.x)
   },
 
@@ -262,7 +260,7 @@ const xUnitVector = {
   // original positions had.
   //
   // See APPENDIX on INTERPOLATE at the bottom of this file.
-  interpolate: function (p, rp1, rp2, pv) {
+  interpolate (p, rp1, rp2, pv) {
     let do1
     let do2
     let doa1
@@ -318,7 +316,7 @@ const xUnitVector = {
   // d   ... distance on projection vector
   // pv  ... projection vector (undefined = this)
   // org ... if true, uses the original position of rp as reference.
-  setRelative: function (p, rp, d, pv, org) {
+  setRelative (p, rp, d, pv, org) {
     if (!pv || pv === this) {
       p.x = (org ? rp.xo : rp.x) + d
       return
@@ -351,9 +349,9 @@ const xUnitVector = {
   }
 }
 
-/*
-* Unit vector of y-axis.
-*/
+/**
+ * Unit vector of y-axis.
+ */
 const yUnitVector = {
   x: 0,
 
@@ -363,7 +361,7 @@ const yUnitVector = {
 
   // Gets the projected distance between two points.
   // o1/o2 ... if true, respective original position is used.
-  distance: function (p1, p2, o1, o2) {
+  distance (p1, p2, o1, o2) {
     return (o1 ? p1.yo : p1.y) - (o2 ? p2.yo : p2.y)
   },
 
@@ -372,7 +370,7 @@ const yUnitVector = {
   // original positions had.
   //
   // See APPENDIX on INTERPOLATE at the bottom of this file.
-  interpolate: function (p, rp1, rp2, pv) {
+  interpolate (p, rp1, rp2, pv) {
     let do1
     let do2
     let doa1
@@ -428,7 +426,7 @@ const yUnitVector = {
   // d   ... distance on projection vector
   // pv  ... projection vector (undefined = this)
   // org ... if true, uses the original position of rp as reference.
-  setRelative: function (p, rp, d, pv, org) {
+  setRelative (p, rp, d, pv, org) {
     if (!pv || pv === this) {
       p.y = (org ? rp.yo : rp.y) + d
       return
