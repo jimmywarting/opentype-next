@@ -216,7 +216,7 @@ class Tokenizer {
    * @param {Token[]} tokens a list of tokens to replace
    * @param {boolean} silent dispatch events and update context ranges
    */
-  replaceRange(startIndex, offset, tokens, silent) {
+  replaceRange(startIndex, offset, tokens, silent = false) {
     offset = offset !== null ? offset : this.tokens.length
     const isTokenType = tokens.every(token => token instanceof Token)
     if (!isNaN(startIndex) && this.inboundIndex(startIndex) && isTokenType) {
