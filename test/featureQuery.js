@@ -1,7 +1,7 @@
 import assert from 'assert';
-import { loadSync } from '../src/opentype';
-import FeatureQuery from '../src/features/featureQuery';
-import { ContextParams } from '../src/tokenizer';
+import { loadSync } from '../src/opentype.js';
+import FeatureQuery from '../src/features/featureQuery.js';
+import { ContextParams } from '../src/tokenizer.js';
 
 describe('featureQuery.js', function() {
     let arabicFont;

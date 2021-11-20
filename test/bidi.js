@@ -1,6 +1,6 @@
 import assert from 'assert';
-import Bidi from '../src/bidi';
-import { loadSync } from '../src/opentype';
+import Bidi from '../src/bidi.js';
+import { loadSync } from '../src/opentype.js';
 
 describe('bidi.js', function() {
     let latinFont;
@@ -86,4 +86,3 @@ describe('bidi.js', function() {
         });
     });
 });
-

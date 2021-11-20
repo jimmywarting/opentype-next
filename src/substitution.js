@@ -1,8 +1,8 @@
 // The Substitution object provides utility methods to manipulate
 // the GSUB substitution table.
 
-import check from './check'
-import Layout from './layout'
+import check from './check.js'
+import Layout from './layout.js'
 
 // Check if 2 arrays of primitives are equal.
 function arraysEqual (ar1, ar2) {

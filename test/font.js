@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { Font, Glyph, Path, loadSync } from '../src/opentype';
+import { Font, Glyph, Path, loadSync } from '../src/opentype.js';
 
 describe('font.js', function() {
     let font;

@@ -25,9 +25,8 @@
 *
 * The exports.DEBUG statements are removed on the minified distribution file.
 */
-'use strict'
 
-import glyf from './tables/glyf'
+import glyf from './tables/glyf.js'
 
 let instructionTable
 let exec
