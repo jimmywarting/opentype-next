@@ -1,8 +1,6 @@
 
 class Token {
-  /**
-   * @param {string} char a single char
-   */
+  /** @param {string} char a single char */
   constructor (char) {
     this.char = char
     this.state = {}

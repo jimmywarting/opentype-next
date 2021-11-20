@@ -6,6 +6,7 @@ import Layout from './layout.js'
 
 // Check if 2 arrays of primitives are equal.
 function arraysEqual (ar1, ar2) {
+  if(ar1 === ar2) return true
   const n = ar1.length
   if (n !== ar2.length) { return false }
   for (let i = 0; i < n; i++) {
