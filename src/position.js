@@ -3,29 +3,29 @@
 
 import Layout from './layout.js'
 
+/** @typedef {import('./font.js').default} Font */
+
 class Position extends Layout {
-  /**
-     * @param {opentype.Font}
-     */
+  /** @param {Font} font */
   constructor (font) {
     super(font, 'gpos')
   }
 
   /**
-     * Init some data for faster and easier access later.
-     */
+   * Init some data for faster and easier access later.
+   */
   init () {
     const script = this.getDefaultScriptName()
     this.defaultKerningTables = this.getKerningTables(script)
   }
 
   /**
-     * Find a glyph pair in a list of lookup tables of type 2 and retrieve the xAdvance kerning value.
-     *
-     * @param {integer} leftIndex - left glyph index
-     * @param {integer} rightIndex - right glyph index
-     * @returns {integer}
-     */
+   * Find a glyph pair in a list of lookup tables of type 2 and retrieve the xAdvance kerning value.
+   *
+   * @param {number} leftIndex - left glyph index
+   * @param {number} rightIndex - right glyph index
+   * @returns {number}
+   */
   getKerningValue (kerningLookups, leftIndex, rightIndex) {
     for (let i = 0; i < kerningLookups.length; i++) {
       const subtables = kerningLookups[i].subtables
@@ -57,12 +57,12 @@ class Position extends Layout {
   }
 
   /**
-     * List all kerning lookup tables.
-     *
-     * @param {string} [script='DFLT'] - use font.position.getDefaultScriptName() for a better default value
-     * @param {string} [language='dflt']
-     * @return {object[]} The list of kerning lookup tables (may be empty), or undefined if there is no GPOS table (and we should use the kern table)
-     */
+   * List all kerning lookup tables.
+   *
+   * @param {string} [script='DFLT'] - use font.position.getDefaultScriptName() for a better default value
+   * @param {string} [language='dflt']
+   * @return {object[]} The list of kerning lookup tables (may be empty), or undefined if there is no GPOS table (and we should use the kern table)
+   */
   getKerningTables (script, language) {
     if (this.font.tables.gpos) {
       return this.getLookupTables(script, language, 'kern', 2)
