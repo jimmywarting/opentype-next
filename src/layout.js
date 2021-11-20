@@ -57,10 +57,6 @@ function searchRange (ranges, value) {
   }
 }
 
-/**
- * @exports opentype.Layout
- * @class
- */
 class Layout {
   constructor (font, tableName) {
     this.font = font
