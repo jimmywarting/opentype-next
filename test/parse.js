@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { unhex } from './testutil'
+import { unhex } from './testutil.js'
 import { Parser } from '../src/parse.js'
 
 describe('parse.js', function () {

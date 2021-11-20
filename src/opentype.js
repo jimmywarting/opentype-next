@@ -45,8 +45,8 @@ import meta from './tables/meta.js'
  * @param  {string} path - The path of the file
  * @param  {Function} callback - The function to call when the font load completes
  */
-function loadFromFile (path, callback) {
-  const fs = require('fs')
+async function loadFromFile (path, callback) {
+  const fs = await import('node:fs')
   fs.readFile(path, function (err, buffer) {
     if (err) {
       return callback(err.message)

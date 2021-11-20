@@ -2,7 +2,7 @@ import assert from 'assert'
 import Bidi from '../src/bidi.js'
 import { loadSync } from '../src/opentype.js'
 
-describe('bidi.js', function () {
+describe.only('bidi.js', function () {
   let latinFont
   let arabicFont
   let bidiFira
