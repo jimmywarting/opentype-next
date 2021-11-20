@@ -134,8 +134,8 @@ class DefaultEncoding {
   }
 
   /**
-     * @param {string} c
-     */
+   * @param {string} c
+   */
   charToGlyphIndex (c) {
     const code = c.codePointAt(0)
     const glyphs = this.font.glyphs
@@ -163,9 +163,9 @@ class CmapEncoding {
   }
 
   /**
-     * @param  {string} c - the character
-     * @return {number} The glyph index.
-     */
+   * @param  {string} c - the character
+   * @return {number} The glyph index.
+   */
   charToGlyphIndex (c) {
     return this.cmap.glyphIndexMap[c.codePointAt(0)] || 0
   }
@@ -176,18 +176,18 @@ class CmapEncoding {
  */
 class CffEncoding {
   /**
-     * @param {string} encoding - The encoding
-     * @param {Array} charset - The character set.
-     */
+   * @param {string} encoding - The encoding
+   * @param {Array} charset - The character set.
+   */
   constructor (encoding, charset) {
     this.encoding = encoding
     this.charset = charset
   }
 
   /**
-     * @param  {string} s - The character
-     * @return {number} The index.
-     */
+   * @param  {string} s - The character
+   * @return {number} The index.
+   */
   charToGlyphIndex (s) {
     const code = s.codePointAt(0)
     const charName = this.encoding[code]
@@ -230,18 +230,18 @@ class GlyphNames {
   }
 
   /**
-     * Gets the index of a glyph by name.
-     * @param  {string} name - The glyph name
-     * @return {number} The index
-     */
+   * Gets the index of a glyph by name.
+   * @param  {string} name - The glyph name
+   * @return {number} The index
+   */
   nameToGlyphIndex (name) {
     return this.names.indexOf(name)
   }
 
   /**
-     * @param  {number} gid
-     * @return {string}
-     */
+   * @param  {number} gid
+   * @return {string}
+   */
   glyphIndexToName (gid) {
     return this.names[gid]
   }

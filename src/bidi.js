@@ -106,9 +106,9 @@ function applyLatinLigatures () {
 
 class Bidi {
   /**
-     * Create Bidi. features
-     * @param {string} baseDir text base direction. value either 'ltr' or 'rtl'
-     */
+   * Create Bidi. features
+   * @param {string} baseDir text base direction. value either 'ltr' or 'rtl'
+   */
   constructor (baseDir) {
     this.baseDir = baseDir || 'ltr'
     this.tokenizer = new Tokenizer()
@@ -116,18 +116,18 @@ class Bidi {
   }
 
   /**
-     * Sets Bidi text
-     * @param {string} text A text input
-     */
+   * Sets Bidi text
+   * @param {string} text A text input
+   */
   setText (text) {
     this.text = text
   }
 
   /**
-     * Register supported features tags
-     * @param {script} script Script tag
-     * @param {Array} tags Features tags list
-     */
+   * Register supported features tags
+   * @param {script} script Script tag
+   * @param {Array} tags Features tags list
+   */
   registerFeatures (script, tags) {
     const supportedTags = tags.filter(
       tag => this.query.supports({ script, tag })
@@ -141,11 +141,11 @@ class Bidi {
   }
 
   /**
-     * Apply GSUB features
-     * @param {Array} tagsList A list of features tags
-     * @param {string} script A script tag
-     * @param {Font} font Opentype font instance
-     */
+   * Apply GSUB features
+   * @param {Array} tagsList A list of features tags
+   * @param {string} script A script tag
+   * @param {Font} font Opentype font instance
+   */
   applyFeatures (font, features) {
     if (!font) {
       throw new Error(
@@ -161,26 +161,26 @@ class Bidi {
   }
 
   /**
-     * Register a state modifier
-     * @param {string} modifierId State modifier id
-     * @param {function} condition A predicate function that returns true or false
-     * @param {function} modifier A modifier function to set token state
-     */
+   * Register a state modifier
+   * @param {string} modifierId State modifier id
+   * @param {function} condition A predicate function that returns true or false
+   * @param {function} modifier A modifier function to set token state
+   */
   registerModifier (modifierId, condition, modifier) {
     this.tokenizer.registerModifier(modifierId, condition, modifier)
   }
 
   /**
-     * Check if a context is registered
-     * @param {string} contextId Context id
-     */
+   * Check if a context is registered
+   * @param {string} contextId Context id
+   */
   checkContextReady (contextId) {
     return !!this.tokenizer.getContext(contextId)
   }
 
   /**
-     * Apply features to registered contexts
-     */
+   * Apply features to registered contexts
+   */
   applyFeaturesToContexts () {
     if (this.checkContextReady('arabicWord')) {
       applyArabicPresentationForms.call(this)
@@ -195,9 +195,9 @@ class Bidi {
   }
 
   /**
-     * process text input
-     * @param {string} text An input text
-     */
+   * process text input
+   * @param {string} text An input text
+   */
   processText (text) {
     if (!this.text || this.text !== text) {
       this.setText(text)
@@ -207,19 +207,19 @@ class Bidi {
   }
 
   /**
-     * Process a string of text to identify and adjust
-     * bidirectional text entities.
-     * @param {string} text Input text
-     */
+   * Process a string of text to identify and adjust
+   * bidirectional text entities.
+   * @param {string} text Input text
+   */
   getBidiText (text) {
     this.processText(text)
     return this.tokenizer.getText()
   }
 
   /**
-     * Get the current state index of each token
-     * @param {text} text An input text
-     */
+   * Get the current state index of each token
+   * @param {text} text An input text
+   */
   getTextGlyphs (text) {
     this.processText(text)
     const indexes = []

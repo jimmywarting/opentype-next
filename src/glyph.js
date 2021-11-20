@@ -46,8 +46,8 @@ function getPathDefinition (glyph, path) {
  */
 class Glyph {
   /**
-     * @param {GlyphOptions} options
-     */
+   * @param {GlyphOptions} options
+   */
   constructor (options) {
     // By putting all the code on a prototype function (which is only declared once)
     // we reduce the memory requirements for larger fonts by some 2%
@@ -55,8 +55,8 @@ class Glyph {
   }
 
   /**
-     * @param {GlyphOptions} options
-     */
+   * @param {GlyphOptions} options
+   */
   bindConstructorValues (options) {
     this.index = options.index || 0
 
@@ -94,8 +94,8 @@ class Glyph {
   }
 
   /**
-     * @param {number} unicode
-     */
+   * @param {number} unicode
+   */
   addUnicode (unicode) {
     if (this.unicodes.length === 0) {
       this.unicode = unicode
@@ -105,22 +105,22 @@ class Glyph {
   }
 
   /**
-     * Calculate the minimum bounding box for this glyph.
-     * @return {opentype.BoundingBox}
-     */
+   * Calculate the minimum bounding box for this glyph.
+   * @return {opentype.BoundingBox}
+   */
   getBoundingBox () {
     return this.path.getBoundingBox()
   }
 
   /**
-     * Convert the glyph to a Path we can draw on a drawing context.
-     * @param  {number} [x=0] - Horizontal position of the beginning of the text.
-     * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
-     * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
-     * @param  {Object=} options - xScale, yScale to stretch the glyph.
-     * @param  {opentype.Font} font - If hinting is to be used, the font
-     * @return {opentype.Path}
-     */
+   * Convert the glyph to a Path we can draw on a drawing context.
+   * @param  {number} [x=0] - Horizontal position of the beginning of the text.
+   * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
+   * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+   * @param  {Object=} options - xScale, yScale to stretch the glyph.
+   * @param  {opentype.Font} font - If hinting is to be used, the font
+   * @return {opentype.Path}
+   */
   getPath (x, y, fontSize, options, font) {
     x = x !== undefined ? x : 0
     y = y !== undefined ? y : 0
@@ -176,11 +176,11 @@ class Glyph {
   }
 
   /**
-     * Split the glyph into contours.
-     * This function is here for backwards compatibility, and to
-     * provide raw access to the TrueType glyph outlines.
-     * @return {Array}
-     */
+   * Split the glyph into contours.
+   * This function is here for backwards compatibility, and to
+   * provide raw access to the TrueType glyph outlines.
+   * @return {Array}
+   */
   getContours () {
     if (this.points === undefined) {
       return []
@@ -202,9 +202,9 @@ class Glyph {
   }
 
   /**
-     * Calculate the xMin/yMin/xMax/yMax/lsb/rsb for a Glyph.
-     * @return {Object}
-     */
+   * Calculate the xMin/yMin/xMax/yMax/lsb/rsb for a Glyph.
+   * @return {Object}
+   */
   getMetrics () {
     const commands = this.path.commands
     const xCoords = []
@@ -256,25 +256,25 @@ class Glyph {
   }
 
   /**
-     * Draw the glyph on the given context.
-     * @param  {CanvasRenderingContext2D} ctx - A 2D drawing context, like Canvas.
-     * @param  {number} [x=0] - Horizontal position of the beginning of the text.
-     * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
-     * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
-     * @param  {Object=} options - xScale, yScale to stretch the glyph.
-     */
+   * Draw the glyph on the given context.
+   * @param  {CanvasRenderingContext2D} ctx - A 2D drawing context, like Canvas.
+   * @param  {number} [x=0] - Horizontal position of the beginning of the text.
+   * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
+   * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+   * @param  {Object=} options - xScale, yScale to stretch the glyph.
+   */
   draw (ctx, x, y, fontSize, options) {
     this.getPath(x, y, fontSize, options).draw(ctx)
   }
 
   /**
-     * Draw the points of the glyph.
-     * On-curve points will be drawn in blue, off-curve points will be drawn in red.
-     * @param  {CanvasRenderingContext2D} ctx - A 2D drawing context, like Canvas.
-     * @param  {number} [x=0] - Horizontal position of the beginning of the text.
-     * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
-     * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
-     */
+   * Draw the points of the glyph.
+   * On-curve points will be drawn in blue, off-curve points will be drawn in red.
+   * @param  {CanvasRenderingContext2D} ctx - A 2D drawing context, like Canvas.
+   * @param  {number} [x=0] - Horizontal position of the beginning of the text.
+   * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
+   * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+   */
   drawPoints (ctx, x, y, fontSize) {
     function drawCircles (l, x, y, scale) {
       ctx.beginPath()
@@ -317,15 +317,15 @@ class Glyph {
   }
 
   /**
-     * Draw lines indicating important font measurements.
-     * Black lines indicate the origin of the coordinate system (point 0,0).
-     * Blue lines indicate the glyph bounding box.
-     * Green line indicates the advance width of the glyph.
-     * @param  {CanvasRenderingContext2D} ctx - A 2D drawing context, like Canvas.
-     * @param  {number} [x=0] - Horizontal position of the beginning of the text.
-     * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
-     * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
-     */
+   * Draw lines indicating important font measurements.
+   * Black lines indicate the origin of the coordinate system (point 0,0).
+   * Blue lines indicate the glyph bounding box.
+   * Green line indicates the advance width of the glyph.
+   * @param  {CanvasRenderingContext2D} ctx - A 2D drawing context, like Canvas.
+   * @param  {number} [x=0] - Horizontal position of the beginning of the text.
+   * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
+   * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+   */
   drawMetrics (ctx, x, y, fontSize) {
     let scale
     x = x !== undefined ? x : 0

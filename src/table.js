@@ -5,10 +5,10 @@ import { encode, sizeOf } from './types.js'
 
 class Table {
   /**
-     * @param {string} tableName
-     * @param {Array} fields
-     * @param {Object} options
-     */
+   * @param {string} tableName
+   * @param {Array} fields
+   * @param {Object} options
+   */
   constructor (tableName, fields, options) {
     // For coverage tables with coverage format 2, we do not want to add the coverage data directly to the table object,
     // as this will result in wrong encoding order of the coverage data on serialization to bytes.
@@ -35,17 +35,17 @@ class Table {
   }
 
   /**
-     * Encodes the table and returns an array of bytes
-     * @return {Array}
-     */
+   * Encodes the table and returns an array of bytes
+   * @return {Array}
+   */
   encode () {
     return encode.TABLE(this)
   }
 
   /**
-     * Get the size of the table.
-     * @return {number}
-     */
+   * Get the size of the table.
+   * @return {number}
+   */
   sizeOf () {
     return sizeOf.TABLE(this)
   }

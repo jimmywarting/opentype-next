@@ -71,10 +71,10 @@ class Layout {
   }
 
   /**
-     * Get or create the Layout table (GSUB, GPOS etc).
-     * @param  {boolean} [create] - Whether to create a new one.
-     * @return {Object} The GSUB or GPOS table.
-     */
+   * Get or create the Layout table (GSUB, GPOS etc).
+   * @param  {boolean} [create] - Whether to create a new one.
+   * @return {Object} The GSUB or GPOS table.
+   */
   getTable (create) {
     let layout = this.font.tables[this.tableName]
     if (!layout && create) {
@@ -84,10 +84,10 @@ class Layout {
   }
 
   /**
-     * Returns all scripts in the substitution table.
-     * @instance
-     * @return {Array}
-     */
+   * Returns all scripts in the substitution table.
+   * @instance
+   * @return {Array}
+   */
   getScriptNames () {
     const layout = this.getTable()
     if (!layout) { return [] }
@@ -97,11 +97,11 @@ class Layout {
   }
 
   /**
-     * Returns the best bet for a script name.
-     * Returns 'DFLT' if it exists.
-     * If not, returns 'latn' if it exists.
-     * If neither exist, returns undefined.
-     */
+   * Returns the best bet for a script name.
+   * Returns 'DFLT' if it exists.
+   * If not, returns 'latn' if it exists.
+   * If neither exist, returns undefined.
+   */
   getDefaultScriptName () {
     const layout = this.getTable()
     if (!layout) { return }
@@ -115,12 +115,12 @@ class Layout {
   }
 
   /**
-     * Returns all LangSysRecords in the given script.
-     * @instance
-     * @param {string} [script='DFLT']
-     * @param {boolean} create - forces the creation of this script table if it doesn't exist.
-     * @return {Object} An object with tag and script properties.
-     */
+   * Returns all LangSysRecords in the given script.
+   * @instance
+   * @param {string} [script='DFLT']
+   * @param {boolean} create - forces the creation of this script table if it doesn't exist.
+   * @return {Object} An object with tag and script properties.
+   */
   getScriptTable (script, create) {
     const layout = this.getTable(create)
     if (layout) {
@@ -144,13 +144,13 @@ class Layout {
   }
 
   /**
-     * Returns a language system table
-     * @instance
-     * @param {string} [script='DFLT']
-     * @param {string} [language='dlft']
-     * @param {boolean} create - forces the creation of this langSysTable if it doesn't exist.
-     * @return {Object}
-     */
+   * Returns a language system table
+   * @instance
+   * @param {string} [script='DFLT']
+   * @param {string} [language='dlft']
+   * @param {boolean} create - forces the creation of this langSysTable if it doesn't exist.
+   * @return {Object}
+   */
   getLangSysTable (script, language, create) {
     const scriptTable = this.getScriptTable(script, create)
     if (scriptTable) {
@@ -172,14 +172,14 @@ class Layout {
   }
 
   /**
-     * Get a specific feature table.
-     * @instance
-     * @param {string} [script='DFLT']
-     * @param {string} [language='dlft']
-     * @param {string} feature - One of the codes listed at https://www.microsoft.com/typography/OTSPEC/featurelist.htm
-     * @param {boolean} create - forces the creation of the feature table if it doesn't exist.
-     * @return {Object}
-     */
+   * Get a specific feature table.
+   * @instance
+   * @param {string} [script='DFLT']
+   * @param {string} [language='dlft']
+   * @param {string} feature - One of the codes listed at https://www.microsoft.com/typography/OTSPEC/featurelist.htm
+   * @param {boolean} create - forces the creation of the feature table if it doesn't exist.
+   * @return {Object}
+   */
   getFeatureTable (script, language, feature, create) {
     const langSysTable = this.getLangSysTable(script, language, create)
     if (langSysTable) {
@@ -210,16 +210,16 @@ class Layout {
   }
 
   /**
-     * Get the lookup tables of a given type for a script/language/feature.
-     * @instance
-     * @param {string} [script='DFLT']
-     * @param {string} [language='dlft']
-     * @param {string} feature - 4-letter feature code
-     * @param {number} lookupType - 1 to 9
-     * @param {boolean} [create] - forces the creation of the lookup table if it doesn't exist, with no subtables.
-     * @return {Object[]}
-     */
-  getLookupTables (script, language, feature, lookupType, create) {
+   * Get the lookup tables of a given type for a script/language/feature.
+   * @instance
+   * @param {string} [script='DFLT']
+   * @param {string} [language='dlft']
+   * @param {string} feature - 4-letter feature code
+   * @param {number} lookupType - 1 to 9
+   * @param {boolean} [create] - forces the creation of the lookup table if it doesn't exist, with no subtables.
+   * @return {Object[]}
+   */
+  getLookupTables (script, language, feature, lookupType, create = false) {
     const featureTable = this.getFeatureTable(script, language, feature, create)
     const tables = []
     if (featureTable) {
@@ -235,7 +235,7 @@ class Layout {
       }
       if (tables.length === 0 && create) {
         lookupTable = {
-          lookupType: lookupType,
+          lookupType,
           lookupFlag: 0,
           subtables: [],
           markFilteringSet: undefined
@@ -250,12 +250,12 @@ class Layout {
   }
 
   /**
-     * Find a glyph in a class definition table
-     * https://docs.microsoft.com/en-us/typography/opentype/spec/chapter2#class-definition-table
-     * @param {object} classDefTable - an OpenType Layout class definition table
-     * @param {number} glyphIndex - the index of the glyph to find
-     * @returns {number} -1 if not found
-     */
+   * Find a glyph in a class definition table
+   * https://docs.microsoft.com/en-us/typography/opentype/spec/chapter2#class-definition-table
+   * @param {object} classDefTable - an OpenType Layout class definition table
+   * @param {number} glyphIndex - the index of the glyph to find
+   * @returns {number} -1 if not found
+   */
   getGlyphClass (classDefTable, glyphIndex) {
     switch (classDefTable.format) {
       case 1:
@@ -270,12 +270,12 @@ class Layout {
   }
 
   /**
-     * Find a glyph in a coverage table
-     * https://docs.microsoft.com/en-us/typography/opentype/spec/chapter2#coverage-table
-     * @param {object} coverageTable - an OpenType Layout coverage table
-     * @param {number} glyphIndex - the index of the glyph to find
-     * @returns {number} -1 if not found
-     */
+   * Find a glyph in a coverage table
+   * https://docs.microsoft.com/en-us/typography/opentype/spec/chapter2#coverage-table
+   * @param {object} coverageTable - an OpenType Layout coverage table
+   * @param {number} glyphIndex - the index of the glyph to find
+   * @returns {number} -1 if not found
+   */
   getCoverageIndex (coverageTable, glyphIndex) {
     switch (coverageTable.format) {
       case 1:
@@ -288,13 +288,13 @@ class Layout {
   }
 
   /**
-     * Returns the list of glyph indexes of a coverage table.
-     * Format 1: the list is stored raw
-     * Format 2: compact list as range records.
-     * @instance
-     * @param  {Object} coverageTable
-     * @return {Array}
-     */
+   * Returns the list of glyph indexes of a coverage table.
+   * Format 1: the list is stored raw
+   * Format 2: compact list as range records.
+   * @instance
+   * @param  {Object} coverageTable
+   * @return {Array}
+   */
   expandCoverage (coverageTable) {
     if (coverageTable.format === 1) {
       return coverageTable.glyphs

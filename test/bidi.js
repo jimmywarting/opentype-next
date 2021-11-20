@@ -10,8 +10,8 @@ describe('bidi.js', function () {
   let arabicTokenizer
   before(function () {
     /**
-         * arab
-         */
+       * arab
+       */
     arabicFont = loadSync('./fonts/Scheherazade-Bold.ttf')
     bidiScheherazade = new Bidi()
     bidiScheherazade.registerModifier(
@@ -25,8 +25,8 @@ describe('bidi.js', function () {
     bidiScheherazade.getTextGlyphs('') // initialize bidi.
     arabicTokenizer = bidiScheherazade.tokenizer
     /**
-         * latin
-         */
+       * latin
+       */
     latinFont = loadSync('./fonts/FiraSansMedium.woff')
     bidiFira = new Bidi()
     bidiFira.registerModifier(

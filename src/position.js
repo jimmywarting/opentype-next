@@ -11,9 +11,7 @@ class Position extends Layout {
     super(font, 'gpos')
   }
 
-  /**
-   * Init some data for faster and easier access later.
-   */
+  /** Init some data for faster and easier access later. */
   init () {
     const script = this.getDefaultScriptName()
     this.defaultKerningTables = this.getKerningTables(script)
@@ -22,8 +20,8 @@ class Position extends Layout {
   /**
    * Find a glyph pair in a list of lookup tables of type 2 and retrieve the xAdvance kerning value.
    *
-   * @param {number} leftIndex - left glyph index
-   * @param {number} rightIndex - right glyph index
+   * @param {number} leftIndex - Left glyph index
+   * @param {number} rightIndex - Right glyph index
    * @returns {number}
    */
   getKerningValue (kerningLookups, leftIndex, rightIndex) {
@@ -43,7 +41,7 @@ class Position extends Layout {
                 return pair.value1 && pair.value1.xAdvance || 0
               }
             }
-            break // left glyph found, not right glyph - try next subtable
+            break // Left glyph found, not right glyph - try next subtable
           case 2:
             // Search Pair Adjustment Positioning Format 2
             const class1 = this.getGlyphClass(subtable.classDef1, leftIndex)
@@ -59,7 +57,7 @@ class Position extends Layout {
   /**
    * List all kerning lookup tables.
    *
-   * @param {string} [script='DFLT'] - use font.position.getDefaultScriptName() for a better default value
+   * @param {string} [script='DFLT'] - Use font.position.getDefaultScriptName() for a better default value
    * @param {string} [language='dflt']
    * @return {object[]} The list of kerning lookup tables (may be empty), or undefined if there is no GPOS table (and we should use the kern table)
    */

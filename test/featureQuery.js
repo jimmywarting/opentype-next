@@ -10,15 +10,15 @@ describe('featureQuery.js', function () {
   const query = {}
   before(function () {
     /**
-         * arab
-         */
+       * arab
+       */
     arabicFont = loadSync('./fonts/Scheherazade-Bold.ttf')
     arabicFontChanga = loadSync('./fonts/Changa-Regular.ttf')
     query.arabic = new FeatureQuery(arabicFont)
     query.arabicChanga = new FeatureQuery(arabicFontChanga)
     /**
-         * latin
-         */
+       * latin
+       */
     latinFont = loadSync('./fonts/FiraSansMedium.woff')
     query.latin = new FeatureQuery(latinFont)
   })

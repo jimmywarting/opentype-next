@@ -25,9 +25,9 @@ function defineDependentProperty (glyph, externalName, internalName) {
  */
 class GlyphSet {
   /**
-     * @param {opentype.Font} font
-     * @param {Array} glyphs
-     */
+   * @param {opentype.Font} font
+   * @param {Array} glyphs
+   */
   constructor (font, glyphs) {
     this.font = font
     this.glyphs = {}
@@ -43,9 +43,9 @@ class GlyphSet {
   }
 
   /**
-     * @param  {number} index
-     * @return {opentype.Glyph}
-     */
+   * @param  {number} index
+   * @return {opentype.Glyph}
+   */
   get (index) {
     // this.glyphs[index] is 'undefined' when low memory mode is on. glyph is pushed on request only.
     if (this.glyphs[index] === undefined) {
@@ -83,9 +83,9 @@ class GlyphSet {
   }
 
   /**
-     * @param  {number} index
-     * @param  {Object} loader
-     */
+   * @param  {number} index
+   * @param  {Object} loader
+   */
   push (index, loader) {
     this.glyphs[index] = loader
     this.length++

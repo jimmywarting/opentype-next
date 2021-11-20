@@ -527,9 +527,9 @@ Font.prototype.defaultRenderOptions = {
   kerning: true,
   features: [
     /**
-       * these 4 features are required to render Arabic text properly
-       * and shouldn't be turned off when rendering arabic text.
-       */
+     * these 4 features are required to render Arabic text properly
+     * and shouldn't be turned off when rendering arabic text.
+     */
     { script: 'arab', tags: ['init', 'medi', 'fina', 'rlig'] },
     { script: 'latn', tags: ['liga', 'rlig'] }
   ]
