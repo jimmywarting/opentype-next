@@ -109,32 +109,32 @@ class Font {
   }
 
   /**
-     * Check if the font has a glyph for the given character.
-     * @param  {string}
-     * @return {Boolean}
-     */
+   * Check if the font has a glyph for the given character.
+   * @param  {string}
+   * @return {Boolean}
+   */
   hasChar (c) {
     return this.encoding.charToGlyphIndex(c) !== null
   }
 
   /**
-     * Convert the given character to a single glyph index.
-     * Note that this function assumes that there is a one-to-one mapping between
-     * the given character and a glyph; for complex scripts this might not be the case.
-     * @param  {string}
-     * @return {Number}
-     */
+   * Convert the given character to a single glyph index.
+   * Note that this function assumes that there is a one-to-one mapping between
+   * the given character and a glyph; for complex scripts this might not be the case.
+   * @param  {string}
+   * @return {Number}
+   */
   charToGlyphIndex (s) {
     return this.encoding.charToGlyphIndex(s)
   }
 
   /**
-     * Convert the given character to a single Glyph object.
-     * Note that this function assumes that there is a one-to-one mapping between
-     * the given character and a glyph; for complex scripts this might not be the case.
-     * @param  {string}
-     * @return {opentype.Glyph}
-     */
+   * Convert the given character to a single Glyph object.
+   * Note that this function assumes that there is a one-to-one mapping between
+   * the given character and a glyph; for complex scripts this might not be the case.
+   * @param  {string}
+   * @return {opentype.Glyph}
+   */
   charToGlyph (c) {
     const glyphIndex = this.charToGlyphIndex(c)
     let glyph = this.glyphs.get(glyphIndex)
@@ -147,9 +147,9 @@ class Font {
   }
 
   /**
-     * Update features
-     * @param {any} options features options
-     */
+   * Update features
+   * @param {any} options features options
+   */
   updateFeatures (options) {
     // TODO: update all features options not only 'latn'.
     return this.defaultRenderOptions.features.map(feature => {
@@ -165,14 +165,14 @@ class Font {
   }
 
   /**
-     * Convert the given text to a list of Glyph objects.
-     * Note that there is no strict one-to-one mapping between characters and
-     * glyphs, so the list of returned glyphs can be larger or smaller than the
-     * length of the given string.
-     * @param  {string}
-     * @param  {GlyphRenderOptions} [options]
-     * @return {opentype.Glyph[]}
-     */
+   * Convert the given text to a list of Glyph objects.
+   * Note that there is no strict one-to-one mapping between characters and
+   * glyphs, so the list of returned glyphs can be larger or smaller than the
+   * length of the given string.
+   * @param  {string}
+   * @param  {GlyphRenderOptions} [options]
+   * @return {opentype.Glyph[]}
+   */
   stringToGlyphs (s, options) {
     const bidi = new Bidi()
 
@@ -201,17 +201,17 @@ class Font {
   }
 
   /**
-     * @param  {string}
-     * @return {Number}
-     */
+   * @param  {string}
+   * @return {Number}
+   */
   nameToGlyphIndex (name) {
     return this.glyphNames.nameToGlyphIndex(name)
   }
 
   /**
-     * @param  {string}
-     * @return {opentype.Glyph}
-     */
+   * @param  {string}
+   * @return {opentype.Glyph}
+   */
   nameToGlyph (name) {
     const glyphIndex = this.nameToGlyphIndex(name)
     let glyph = this.glyphs.get(glyphIndex)
@@ -224,9 +224,9 @@ class Font {
   }
 
   /**
-     * @param  {Number}
-     * @return {String}
-     */
+   * @param  {Number}
+   * @return {String}
+   */
   glyphIndexToName (gid) {
     if (!this.glyphNames.glyphIndexToName) {
       return ''
@@ -236,16 +236,16 @@ class Font {
   }
 
   /**
-     * Retrieve the value of the kerning pair between the left glyph (or its index)
-     * and the right glyph (or its index). If no kerning pair is found, return 0.
-     * The kerning value gets added to the advance width when calculating the spacing
-     * between glyphs.
-     * For GPOS kerning, this method uses the default script and language, which covers
-     * most use cases. To have greater control, use font.position.getKerningValue .
-     * @param  {opentype.Glyph} leftGlyph
-     * @param  {opentype.Glyph} rightGlyph
-     * @return {Number}
-     */
+   * Retrieve the value of the kerning pair between the left glyph (or its index)
+   * and the right glyph (or its index). If no kerning pair is found, return 0.
+   * The kerning value gets added to the advance width when calculating the spacing
+   * between glyphs.
+   * For GPOS kerning, this method uses the default script and language, which covers
+   * most use cases. To have greater control, use font.position.getKerningValue .
+   * @param  {opentype.Glyph} leftGlyph
+   * @param  {opentype.Glyph} rightGlyph
+   * @return {Number}
+   */
   getKerningValue (leftGlyph, rightGlyph) {
     leftGlyph = leftGlyph.index || leftGlyph
     rightGlyph = rightGlyph.index || rightGlyph
@@ -258,19 +258,16 @@ class Font {
   }
 
   /**
-     * Helper function that invokes the given callback for each glyph in the given text.
-     * The callback gets `(glyph, x, y, fontSize, options)`.* @param  {string} text
-     * @param {string} text - The text to apply.
-     * @param  {number} [x=0] - Horizontal position of the beginning of the text.
-     * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
-     * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
-     * @param  {GlyphRenderOptions=} options
-     * @param  {Function} callback
-     */
-  forEachGlyph (text, x, y, fontSize, options, callback) {
-    x = x !== undefined ? x : 0
-    y = y !== undefined ? y : 0
-    fontSize = fontSize !== undefined ? fontSize : 72
+   * Helper function that invokes the given callback for each glyph in the given text.
+   * The callback gets `(glyph, x, y, fontSize, options)`.* @param  {string} text
+   * @param {string} text - The text to apply.
+   * @param  {number} [x=0] - Horizontal position of the beginning of the text.
+   * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
+   * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+   * @param  {GlyphRenderOptions=} options
+   * @param  {Function} callback
+   */
+  forEachGlyph (text, x = 0, y = 0, fontSize = 72, options, callback) {
     options = Object.assign({}, this.defaultRenderOptions, options)
     const fontScale = 1 / this.unitsPerEm * fontSize
     const glyphs = this.stringToGlyphs(text, options)
@@ -305,14 +302,14 @@ class Font {
   }
 
   /**
-     * Create a Path object that represents the given text.
-     * @param  {string} text - The text to create.
-     * @param  {number} [x=0] - Horizontal position of the beginning of the text.
-     * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
-     * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
-     * @param  {GlyphRenderOptions=} options
-     * @return {opentype.Path}
-     */
+   * Create a Path object that represents the given text.
+   * @param  {string} text - The text to create.
+   * @param  {number} [x=0] - Horizontal position of the beginning of the text.
+   * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
+   * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+   * @param  {GlyphRenderOptions=} options
+   * @return {opentype.Path}
+   */
   getPath (text, x, y, fontSize, options) {
     const fullPath = new Path()
     this.forEachGlyph(text, x, y, fontSize, options, function (glyph, gX, gY, gFontSize) {
@@ -323,14 +320,14 @@ class Font {
   }
 
   /**
-     * Create an array of Path objects that represent the glyphs of a given text.
-     * @param  {string} text - The text to create.
-     * @param  {number} [x=0] - Horizontal position of the beginning of the text.
-     * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
-     * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
-     * @param  {GlyphRenderOptions=} options
-     * @return {opentype.Path[]}
-     */
+   * Create an array of Path objects that represent the glyphs of a given text.
+   * @param  {string} text - The text to create.
+   * @param  {number} [x=0] - Horizontal position of the beginning of the text.
+   * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
+   * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+   * @param  {GlyphRenderOptions=} options
+   * @return {opentype.Path[]}
+   */
   getPaths (text, x, y, fontSize, options) {
     const glyphPaths = []
     this.forEachGlyph(text, x, y, fontSize, options, function (glyph, gX, gY, gFontSize) {
@@ -342,47 +339,47 @@ class Font {
   }
 
   /**
-     * Returns the advance width of a text.
-     *
-     * This is something different than Path.getBoundingBox() as for example a
-     * suffixed whitespace increases the advanceWidth but not the bounding box
-     * or an overhanging letter like a calligraphic 'f' might have a quite larger
-     * bounding box than its advance width.
-     *
-     * This corresponds to canvas2dContext.measureText(text).width
-     *
-     * @param  {string} text - The text to create.
-     * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
-     * @param  {GlyphRenderOptions=} options
-     * @return advance width
-     */
+   * Returns the advance width of a text.
+   *
+   * This is something different than Path.getBoundingBox() as for example a
+   * suffixed whitespace increases the advanceWidth but not the bounding box
+   * or an overhanging letter like a calligraphic 'f' might have a quite larger
+   * bounding box than its advance width.
+   *
+   * This corresponds to canvas2dContext.measureText(text).width
+   *
+   * @param  {string} text - The text to create.
+   * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+   * @param  {GlyphRenderOptions=} options
+   * @return advance width
+   */
   getAdvanceWidth (text, fontSize, options) {
     return this.forEachGlyph(text, 0, 0, fontSize, options, function () { })
   }
 
   /**
-     * Draw the text on the given drawing context.
-     * @param  {CanvasRenderingContext2D} ctx - A 2D drawing context, like Canvas.
-     * @param  {string} text - The text to create.
-     * @param  {number} [x=0] - Horizontal position of the beginning of the text.
-     * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
-     * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
-     * @param  {GlyphRenderOptions=} options
-     */
+   * Draw the text on the given drawing context.
+   * @param  {CanvasRenderingContext2D} ctx - A 2D drawing context, like Canvas.
+   * @param  {string} text - The text to create.
+   * @param  {number} [x=0] - Horizontal position of the beginning of the text.
+   * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
+   * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+   * @param  {GlyphRenderOptions=} options
+   */
   draw (ctx, text, x, y, fontSize, options) {
     this.getPath(text, x, y, fontSize, options).draw(ctx)
   }
 
   /**
-     * Draw the points of all glyphs in the text.
-     * On-curve points will be drawn in blue, off-curve points will be drawn in red.
-     * @param {CanvasRenderingContext2D} ctx - A 2D drawing context, like Canvas.
-     * @param {string} text - The text to create.
-     * @param {number} [x=0] - Horizontal position of the beginning of the text.
-     * @param {number} [y=0] - Vertical position of the *baseline* of the text.
-     * @param {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
-     * @param {GlyphRenderOptions=} options
-     */
+   * Draw the points of all glyphs in the text.
+   * On-curve points will be drawn in blue, off-curve points will be drawn in red.
+   * @param {CanvasRenderingContext2D} ctx - A 2D drawing context, like Canvas.
+   * @param {string} text - The text to create.
+   * @param {number} [x=0] - Horizontal position of the beginning of the text.
+   * @param {number} [y=0] - Vertical position of the *baseline* of the text.
+   * @param {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+   * @param {GlyphRenderOptions=} options
+   */
   drawPoints (ctx, text, x, y, fontSize, options) {
     this.forEachGlyph(text, x, y, fontSize, options, function (glyph, gX, gY, gFontSize) {
       glyph.drawPoints(ctx, gX, gY, gFontSize)
@@ -390,17 +387,17 @@ class Font {
   }
 
   /**
-     * Draw lines indicating important font measurements for all glyphs in the text.
-     * Black lines indicate the origin of the coordinate system (point 0,0).
-     * Blue lines indicate the glyph bounding box.
-     * Green line indicates the advance width of the glyph.
-     * @param {CanvasRenderingContext2D} ctx - A 2D drawing context, like Canvas.
-     * @param {string} text - The text to create.
-     * @param {number} [x=0] - Horizontal position of the beginning of the text.
-     * @param {number} [y=0] - Vertical position of the *baseline* of the text.
-     * @param {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
-     * @param {GlyphRenderOptions=} options
-     */
+   * Draw lines indicating important font measurements for all glyphs in the text.
+   * Black lines indicate the origin of the coordinate system (point 0,0).
+   * Blue lines indicate the glyph bounding box.
+   * Green line indicates the advance width of the glyph.
+   * @param {CanvasRenderingContext2D} ctx - A 2D drawing context, like Canvas.
+   * @param {string} text - The text to create.
+   * @param {number} [x=0] - Horizontal position of the beginning of the text.
+   * @param {number} [y=0] - Vertical position of the *baseline* of the text.
+   * @param {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+   * @param {GlyphRenderOptions=} options
+   */
   drawMetrics (ctx, text, x, y, fontSize, options) {
     this.forEachGlyph(text, x, y, fontSize, options, function (glyph, gX, gY, gFontSize) {
       glyph.drawMetrics(ctx, gX, gY, gFontSize)
@@ -408,9 +405,9 @@ class Font {
   }
 
   /**
-     * @param  {string}
-     * @return {string}
-     */
+   * @param  {string}
+   * @return {string}
+   */
   getEnglishName (name) {
     const translations = this.names[name]
     if (translations) {
@@ -419,8 +416,8 @@ class Font {
   }
 
   /**
-     * Validate
-     */
+   * Validate
+   */
   validate () {
     const warnings = []
     const _this = this
@@ -449,26 +446,26 @@ class Font {
   }
 
   /**
-     * Convert the font object to a SFNT data structure.
-     * This structure contains all the necessary tables and metadata to create a binary OTF file.
-     * @return {opentype.Table}
-     */
+   * Convert the font object to a SFNT data structure.
+   * This structure contains all the necessary tables and metadata to create a binary OTF file.
+   * @return {opentype.Table}
+   */
   toTables () {
     return sfnt.fontToTable(this)
   }
 
   /**
-     * @deprecated Font.toBuffer is deprecated. Use Font.toArrayBuffer instead.
-     */
+   * @deprecated Font.toBuffer is deprecated. Use Font.toArrayBuffer instead.
+   */
   toBuffer () {
     console.warn('Font.toBuffer is deprecated. Use Font.toArrayBuffer instead.')
     return this.toArrayBuffer()
   }
 
   /**
-     * Converts a `opentype.Font` into an `ArrayBuffer`
-     * @return {ArrayBuffer}
-     */
+   * Converts a `opentype.Font` into an `ArrayBuffer`
+   * @return {ArrayBuffer}
+   */
   toArrayBuffer () {
     const sfntTable = this.toTables()
     const bytes = sfntTable.encode()
@@ -482,8 +479,8 @@ class Font {
   }
 
   /**
-     * Initiate a download of the OpenType font.
-     */
+   * Initiate a download of the OpenType font.
+   */
   download (fileName) {
     const familyName = this.getEnglishName('fontFamily')
     const styleName = this.getEnglishName('fontSubfamily')
@@ -530,9 +527,9 @@ Font.prototype.defaultRenderOptions = {
   kerning: true,
   features: [
     /**
-         * these 4 features are required to render Arabic text properly
-         * and shouldn't be turned off when rendering arabic text.
-         */
+       * these 4 features are required to render Arabic text properly
+       * and shouldn't be turned off when rendering arabic text.
+       */
     { script: 'arab', tags: ['init', 'medi', 'fina', 'rlig'] },
     { script: 'latn', tags: ['liga', 'rlig'] }
   ]
