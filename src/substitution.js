@@ -4,6 +4,8 @@
 import check from './check.js'
 import Layout from './layout.js'
 
+/** @typedef {import('./font.js').default} Font */
+
 // Check if 2 arrays of primitives are equal.
 function arraysEqual (ar1, ar2) {
   if(ar1 === ar2) return true
@@ -32,9 +34,7 @@ function getSubstFormat (lookupTable, format, defaultSubtable) {
 }
 
 class Substitution extends Layout {
-  /**
-   * @param {opentype.Font}
-   */
+  /** @param {Font} font */
   constructor (font) {
     super(font, 'gsub')
   }
