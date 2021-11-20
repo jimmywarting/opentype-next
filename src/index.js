@@ -1,5 +1,5 @@
-import * as opentype from './opentype.js';
+import * as opentype from './opentype.js'
 
-export default opentype;
+export default opentype
 
-export * from './opentype.js';
+export * from './opentype.js'
