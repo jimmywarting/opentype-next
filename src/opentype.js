@@ -34,7 +34,7 @@ import post from './tables/post.js'
 import meta from './tables/meta.js'
 
 // TODO: temporary fix to deal with requirejs and loadSync tests
-import fs from 'fs'
+import fs from 'node:fs'
 
 /**
  * The opentype library.
@@ -57,30 +57,6 @@ async function loadFromFile (path, callback) {
 
     callback(null, nodeBufferToArrayBuffer(buffer))
   })
-}
-/**
- * Loads a font from a URL. The callback throws an error message as the first parameter if it fails
- * and the font as an ArrayBuffer in the second parameter if it succeeds.
- * @param  {string} url - The URL of the font file.
- * @param  {Function} callback - The function to call when the font load completes
- */
-function loadFromUrl (url, callback) {
-  const request = new XMLHttpRequest()
-  request.open('get', url, true)
-  request.responseType = 'arraybuffer'
-  request.onload = function () {
-    if (request.response) {
-      return callback(null, request.response)
-    } else {
-      return callback('Font could not be loaded: ' + request.statusText)
-    }
-  }
-
-  request.onerror = function () {
-    callback('Font could not be loaded')
-  }
-
-  request.send()
 }
 
 // Table Directory Entries //////////////////////////////////////////////
@@ -391,8 +367,7 @@ function parseBuffer (buffer, opt) {
  */
 function load (url, callback, opt) {
   opt = (opt === undefined || opt === null) ? {} : opt
-  const isNode = typeof window === 'undefined'
-  const loadFn = isNode && !opt.isUrl ? loadFromFile : loadFromUrl
+  const loadFn = loadFromFile
 
   return new Promise((resolve, reject) => {
     loadFn(url, function (err, arrayBuffer) {
