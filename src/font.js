@@ -10,12 +10,14 @@ import { isBrowser, checkArgument, arrayBufferToNodeBuffer } from './util.js'
 import HintingTrueType from './hintingtt.js'
 import Bidi from './bidi.js'
 
+/** @typedef {import('./glyph.js').default} Glyph */
+
 /**
  * @typedef FontOptions
- * @type Object
- * @property {Boolean} empty - whether to create a new empty font
- * @property {string} familyName
- * @property {string} styleName
+ * @type {Object}
+ * @property {Boolean=} empty - whether to create a new empty font
+ * @property {string=} familyName
+ * @property {string=} styleName
  * @property {string=} fullName
  * @property {string=} postScriptName
  * @property {string=} designer
@@ -28,10 +30,10 @@ import Bidi from './bidi.js'
  * @property {string=} description
  * @property {string=} copyright
  * @property {string=} trademark
- * @property {Number} unitsPerEm
- * @property {Number} ascender
- * @property {Number} descender
- * @property {Number} createdTimestamp
+ * @property {Number=} unitsPerEm
+ * @property {Number=} ascender
+ * @property {Number=} descender
+ * @property {Number=} createdTimestamp
  * @property {string=} weightClass
  * @property {string=} widthClass
  * @property {string=} fsSelection
@@ -44,8 +46,7 @@ import Bidi from './bidi.js'
  */
 class Font {
   /** @param {FontOptions} [options] */
-  constructor (options) {
-    options = options || {}
+  constructor (options = {}) {
     options.tables = options.tables || {}
 
     if (!options.empty) {
@@ -99,7 +100,7 @@ class Font {
     this._hmtxTableData = {}
 
     Object.defineProperty(this, 'hinting', {
-      get: function () {
+      get() {
         if (this._hinting) { return this._hinting }
         if (this.outlinesFormat === 'truetype') {
           return (this._hinting = new HintingTrueType(this))
@@ -110,8 +111,7 @@ class Font {
 
   /**
    * Check if the font has a glyph for the given character.
-   * @param  {string}
-   * @return {Boolean}
+   * @param {string} c
    */
   hasChar (c) {
     return this.encoding.charToGlyphIndex(c) !== null
@@ -121,8 +121,7 @@ class Font {
    * Convert the given character to a single glyph index.
    * Note that this function assumes that there is a one-to-one mapping between
    * the given character and a glyph; for complex scripts this might not be the case.
-   * @param  {string}
-   * @return {Number}
+   * @param {string} s
    */
   charToGlyphIndex (s) {
     return this.encoding.charToGlyphIndex(s)
@@ -132,8 +131,8 @@ class Font {
    * Convert the given character to a single Glyph object.
    * Note that this function assumes that there is a one-to-one mapping between
    * the given character and a glyph; for complex scripts this might not be the case.
-   * @param  {string}
-   * @return {opentype.Glyph}
+   * @param {string} c
+   * @return {Glyph}
    */
   charToGlyph (c) {
     const glyphIndex = this.charToGlyphIndex(c)
@@ -148,7 +147,7 @@ class Font {
 
   /**
    * Update features
-   * @param {any} options features options
+   * @param {object} options features options
    */
   updateFeatures (options) {
     // TODO: update all features options not only 'latn'.
@@ -169,9 +168,9 @@ class Font {
    * Note that there is no strict one-to-one mapping between characters and
    * glyphs, so the list of returned glyphs can be larger or smaller than the
    * length of the given string.
-   * @param  {string}
+   * @param  {string} s
    * @param  {GlyphRenderOptions} [options]
-   * @return {opentype.Glyph[]}
+   * @return {Glyph[]}
    */
   stringToGlyphs (s, options) {
     const bidi = new Bidi()

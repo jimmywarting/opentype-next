@@ -117,29 +117,31 @@ function parseWOFFTableEntries (data, numTables) {
 
 /**
  * @typedef TableData
- * @type Object
+ * @type {Object}
  * @property {DataView} data - The DataView
  * @property {number} offset - The data offset.
  */
 
 /**
- * @param  {DataView}
- * @param  {Object}
+ * @param {DataView} data
+ * @param {Object} tableEntry
  * @return {TableData}
  */
 function uncompressTable (data, tableEntry) {
   if (tableEntry.compression === 'WOFF') {
     const inBuffer = new Uint8Array(data.buffer, tableEntry.offset + 2, tableEntry.compressedLength - 2)
     const outBuffer = new Uint8Array(tableEntry.length)
+
     inflate(inBuffer, outBuffer)
+
     if (outBuffer.byteLength !== tableEntry.length) {
       throw new Error('Decompression error: ' + tableEntry.tag + ' decompressed length doesn\'t match recorded length')
     }
 
-    const view = new DataView(outBuffer.buffer, 0)
-    return { data: view, offset: 0 }
+    const data = new DataView(outBuffer.buffer, 0)
+    return { data, offset: 0 }
   } else {
-    return { data: data, offset: tableEntry.offset }
+    return { data, offset: tableEntry.offset }
   }
 }
 
@@ -148,13 +150,10 @@ function uncompressTable (data, tableEntry) {
 /**
  * Parse the OpenType file data (as an ArrayBuffer) and return a Font object.
  * Throws an error if the font could not be parsed.
- * @param  {ArrayBuffer}
- * @param  {Object} opt - options for parsing
- * @return {opentype.Font}
+ * @param {ArrayBuffer} buffer
+ * @param opt - Options for parsing
  */
-function parseBuffer (buffer, opt) {
-  opt = (opt === undefined || opt === null) ? {} : opt
-
+function parseBuffer (buffer, opt = {}) {
   let indexToLocFormat
   let ltagTable
 
@@ -400,10 +399,9 @@ function load (url, callback, opt) {
 /**
  * Synchronously load the font from a URL or file.
  * When done, returns the font object or throws an error.
- * @alias opentype.loadSync
  * @param  {string} url - The URL of the font to load.
  * @param  {Object} opt - opt.lowMemory
- * @return {opentype.Font}
+ * @return {Font}
  */
 function loadSync (url, opt) {
   const buffer = fs.readFileSync(url)
