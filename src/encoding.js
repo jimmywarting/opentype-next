@@ -1,5 +1,7 @@
 // Glyph encoding
 
+/** @typedef {import('./font.js').default} Font */
+
 const cffStandardStrings = [
   '.notdef', 'space', 'exclam', 'quotedbl', 'numbersign', 'dollar', 'percent', 'ampersand', 'quoteright',
   'parenleft', 'parenright', 'asterisk', 'plus', 'comma', 'hyphen', 'period', 'slash', 'zero', 'one', 'two',
@@ -126,7 +128,7 @@ const standardNames = [
  * @exports opentype.DefaultEncoding
  */
 class DefaultEncoding {
-  /** @param {opentype.Font} font */
+  /** @param {Font} font */
   constructor (font) {
     this.font = font
   }
@@ -193,13 +195,8 @@ class CffEncoding {
   }
 }
 
-/**
- * @exports opentype.GlyphNames
- */
 class GlyphNames {
-  /**
-     * @param {Object} post
-     */
+  /** @param {Object} post */
   constructor (post) {
     switch (post.version) {
       case 1:
@@ -295,12 +292,8 @@ function addGlyphNamesToUnicodeMap (font) {
   }
 }
 
-/**
- * @alias opentype.addGlyphNames
- * @param {opentype.Font}
- * @param {Object}
- */
-function addGlyphNames (font, opt) {
+/** @param {Font} font */
+function addGlyphNames (font, opt = {}) {
   if (opt.lowMemory) {
     addGlyphNamesToUnicodeMap(font)
   } else {
