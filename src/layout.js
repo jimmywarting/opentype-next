@@ -4,57 +4,54 @@
 import check from './check.js'
 
 function searchTag (arr, tag) {
-  /* jshint bitwise: false */
-  let imin = 0
-  let imax = arr.length - 1
-  while (imin <= imax) {
-    const imid = (imin + imax) >>> 1
-    const val = arr[imid].tag
+  let iMin = 0
+  let iMax = arr.length - 1
+  while (iMin <= iMax) {
+    const iMid = (iMin + iMax) >>> 1
+    const val = arr[iMid].tag
     if (val === tag) {
-      return imid
+      return iMid
     } else if (val < tag) {
-      imin = imid + 1
-    } else { imax = imid - 1 }
+      iMin = iMid + 1
+    } else { iMax = iMid - 1 }
   }
   // Not found: return -1-insertion point
-  return -imin - 1
+  return -iMin - 1
 }
 
 function binSearch (arr, value) {
-  /* jshint bitwise: false */
-  let imin = 0
-  let imax = arr.length - 1
-  while (imin <= imax) {
-    const imid = (imin + imax) >>> 1
-    const val = arr[imid]
+  let iMin = 0
+  let iMax = arr.length - 1
+  while (iMin <= iMax) {
+    const iMid = (iMin + iMax) >>> 1
+    const val = arr[iMid]
     if (val === value) {
-      return imid
+      return iMid
     } else if (val < value) {
-      imin = imid + 1
-    } else { imax = imid - 1 }
+      iMin = iMid + 1
+    } else { iMax = iMid - 1 }
   }
   // Not found: return -1-insertion point
-  return -imin - 1
+  return -iMin - 1
 }
 
 // binary search in a list of ranges (coverage, class definition)
 function searchRange (ranges, value) {
-  // jshint bitwise: false
   let range
-  let imin = 0
-  let imax = ranges.length - 1
-  while (imin <= imax) {
-    const imid = (imin + imax) >>> 1
-    range = ranges[imid]
+  let iMin = 0
+  let iMax = ranges.length - 1
+  while (iMin <= iMax) {
+    const iMid = (iMin + iMax) >>> 1
+    range = ranges[iMid]
     const start = range.start
     if (start === value) {
       return range
     } else if (start < value) {
-      imin = imid + 1
-    } else { imax = imid - 1 }
+      iMin = iMid + 1
+    } else { iMax = iMid - 1 }
   }
-  if (imin > 0) {
-    range = ranges[imin - 1]
+  if (iMin > 0) {
+    range = ranges[iMin - 1]
     if (value > range.end) return 0
     return range
   }
