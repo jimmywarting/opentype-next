@@ -465,99 +465,100 @@ Object.freeze(yUnitVector)
 /*
 * Creates a unit vector that is not x- or y-axis.
 */
-function UnitVector (x, y) {
-  this.x = x
-  this.y = y
-  this.axis = undefined
-  this.slope = y / x
-  this.normalSlope = -x / y
-  Object.freeze(this)
-}
-
-/*
-* Gets the projected distance between two points.
-* o1/o2 ... if true, respective original position is used.
-*/
-UnitVector.prototype.distance = function (p1, p2, o1, o2) {
-  return (
-    this.x * xUnitVector.distance(p1, p2, o1, o2) +
-        this.y * yUnitVector.distance(p1, p2, o1, o2)
-  )
-}
-
-/*
-* Moves point p so the moved position has the same relative
-* position to the moved positions of rp1 and rp2 than the
-* original positions had.
-*
-* See APPENDIX on INTERPOLATE at the bottom of this file.
-*/
-UnitVector.prototype.interpolate = function (p, rp1, rp2, pv) {
-  let dm1
-  let dm2
-  let do1
-  let do2
-  let doa1
-  let doa2
-  let dt
-
-  do1 = pv.distance(p, rp1, true, true)
-  do2 = pv.distance(p, rp2, true, true)
-  dm1 = pv.distance(rp1, rp1, false, true)
-  dm2 = pv.distance(rp2, rp2, false, true)
-  doa1 = Math.abs(do1)
-  doa2 = Math.abs(do2)
-  dt = doa1 + doa2
-
-  if (dt === 0) {
-    this.setRelative(p, p, (dm1 + dm2) / 2, pv, true)
-    return
+class UnitVector {
+  constructor (x, y) {
+    this.x = x
+    this.y = y
+    this.axis = undefined
+    this.slope = y / x
+    this.normalSlope = -x / y
+    Object.freeze(this)
   }
 
-  this.setRelative(p, p, (dm1 * doa2 + dm2 * doa1) / dt, pv, true)
+  /**
+   * Gets the projected distance between two points.
+   * o1/o2 ... if true, respective original position is used.
+   */
+  distance(p1, p2, o1, o2) {
+    return (
+      this.x * xUnitVector.distance(p1, p2, o1, o2) +
+      this.y * yUnitVector.distance(p1, p2, o1, o2)
+    )
+  }
+  /**
+   * Moves point p so the moved position has the same relative
+   * position to the moved positions of rp1 and rp2 than the
+   * original positions had.
+   *
+   * See APPENDIX on INTERPOLATE at the bottom of this file.
+   */
+  interpolate(p, rp1, rp2, pv) {
+    let dm1
+    let dm2
+    let do1
+    let do2
+    let doa1
+    let doa2
+    let dt
+
+    do1 = pv.distance(p, rp1, true, true)
+    do2 = pv.distance(p, rp2, true, true)
+    dm1 = pv.distance(rp1, rp1, false, true)
+    dm2 = pv.distance(rp2, rp2, false, true)
+    doa1 = Math.abs(do1)
+    doa2 = Math.abs(do2)
+    dt = doa1 + doa2
+
+    if (dt === 0) {
+      this.setRelative(p, p, (dm1 + dm2) / 2, pv, true)
+      return
+    }
+
+    this.setRelative(p, p, (dm1 * doa2 + dm2 * doa1) / dt, pv, true)
+  }
+
+  /**
+   * Sets the point 'p' relative to point 'rp'
+   * by the distance 'd'
+   *
+   * See APPENDIX on SETRELATIVE at the bottom of this file.
+   *
+   * p   ...  point to set
+   * rp  ... reference point
+   * d   ... distance on projection vector
+   * pv  ... projection vector (undefined = this)
+   * org ... if true, uses the original position of rp as reference.
+   */
+  setRelative(p, rp, d, pv, org) {
+    pv = pv || this
+
+    const rpx = org ? rp.xo : rp.x
+    const rpy = org ? rp.yo : rp.y
+    const rpdx = rpx + d * pv.x
+    const rpdy = rpy + d * pv.y
+
+    const pvns = pv.normalSlope
+    const fvs = this.slope
+
+    const px = p.x
+    const py = p.y
+
+    p.x = (fvs * px - pvns * rpdx + rpdy - py) / (fvs - pvns)
+    p.y = fvs * (p.x - px) + py
+  }
+
+  /**
+   * Touches the point p.
+   */
+  touch(p) {
+    p.xTouched = true
+    p.yTouched = true
+  }
 }
 
-/*
-* Sets the point 'p' relative to point 'rp'
-* by the distance 'd'
-*
-* See APPENDIX on SETRELATIVE at the bottom of this file.
-*
-* p   ...  point to set
-* rp  ... reference point
-* d   ... distance on projection vector
-* pv  ... projection vector (undefined = this)
-* org ... if true, uses the original position of rp as reference.
-*/
-UnitVector.prototype.setRelative = function (p, rp, d, pv, org) {
-  pv = pv || this
-
-  const rpx = org ? rp.xo : rp.x
-  const rpy = org ? rp.yo : rp.y
-  const rpdx = rpx + d * pv.x
-  const rpdy = rpy + d * pv.y
-
-  const pvns = pv.normalSlope
-  const fvs = this.slope
-
-  const px = p.x
-  const py = p.y
-
-  p.x = (fvs * px - pvns * rpdx + rpdy - py) / (fvs - pvns)
-  p.y = fvs * (p.x - px) + py
-}
-
-/*
-* Touches the point p.
-*/
-UnitVector.prototype.touch = function (p) {
-  p.xTouched = true
-  p.yTouched = true
-}
-
-/*
-* Returns a unit vector with x/y coordinates.
-*/
+/**
+ * Returns a unit vector with x/y coordinates.
+ */
 function getUnitVector (x, y) {
   const d = Math.sqrt(x * x + y * y)
 
@@ -569,67 +570,67 @@ function getUnitVector (x, y) {
   else return new UnitVector(x, y)
 }
 
-/*
-* Creates a point in the hinting engine.
-*/
-function HPoint (
-  x,
-  y,
-  lastPointOfContour,
-  onCurve
-) {
-  this.x = this.xo = Math.round(x * 64) / 64 // hinted x value and original x-value
-  this.y = this.yo = Math.round(y * 64) / 64 // hinted y value and original y-value
+/**
+ * Creates a point in the hinting engine.
+ */
+class HPoint {
+  constructor (x, y, lastPointOfContour, onCurve) {
+    this.x = this.xo = Math.round(x * 64) / 64 // hinted x value and original x-value
+    this.y = this.yo = Math.round(y * 64) / 64 // hinted y value and original y-value
 
-  this.lastPointOfContour = lastPointOfContour
-  this.onCurve = onCurve
-  this.prevPointOnContour = undefined
-  this.nextPointOnContour = undefined
-  this.xTouched = false
-  this.yTouched = false
+    this.lastPointOfContour = lastPointOfContour
+    this.onCurve = onCurve
+    this.prevPointOnContour = undefined
+    this.nextPointOnContour = undefined
+    this.xTouched = false
+    this.yTouched = false
 
-  Object.preventExtensions(this)
+    Object.preventExtensions(this)
+  }
+
+  /**
+   * Returns the next touched point on the contour.
+   *
+   * v  ... unit vector to test touch axis.
+   */
+  nextTouched(v) {
+    let p = this.nextPointOnContour
+
+    while (!v.touched(p) && p !== this)
+      p = p.nextPointOnContour
+
+    return p
+  }
+
+  /**
+   * Returns the previous touched point on the contour
+   *
+   * v  ... unit vector to test touch axis.
+   */
+  prevTouched(v) {
+    let p = this.prevPointOnContour
+
+    while (!v.touched(p) && p !== this)
+      p = p.prevPointOnContour
+
+    return p
+  }
 }
 
-/*
-* Returns the next touched point on the contour.
-*
-* v  ... unit vector to test touch axis.
-*/
-HPoint.prototype.nextTouched = function (v) {
-  let p = this.nextPointOnContour
 
-  while (!v.touched(p) && p !== this) p = p.nextPointOnContour
-
-  return p
-}
-
-/*
-* Returns the previous touched point on the contour
-*
-* v  ... unit vector to test touch axis.
-*/
-HPoint.prototype.prevTouched = function (v) {
-  let p = this.prevPointOnContour
-
-  while (!v.touched(p) && p !== this) p = p.prevPointOnContour
-
-  return p
-}
-
-/*
-* The zero point.
-*/
+/**
+ * The zero point.
+ */
 const HPZero = Object.freeze(new HPoint(0, 0))
 
-/*
-* The default state of the interpreter.
-*
-* Note: Freezing the defaultState and then deriving from it
-* makes the V8 Javascript engine going awkward,
-* so this is avoided, albeit the defaultState shouldn't
-* ever change.
-*/
+/**
+ * The default state of the interpreter.
+ *
+ * Note: Freezing the defaultState and then deriving from it
+ * makes the V8 Javascript engine going awkward,
+ * so this is avoided, albeit the defaultState shouldn't
+ * ever change.
+ */
 const defaultState = {
   cvCutIn: 17 / 16, // control value cut in
   deltaBase: 9,
@@ -639,25 +640,27 @@ const defaultState = {
   autoFlip: true
 }
 
-/*
-* The current state of the interpreter.
-*
-* env  ... 'fpgm' or 'prep' or 'glyf'
-* prog ... the program
-*/
-function State (env, prog) {
-  this.env = env
-  this.stack = []
-  this.prog = prog
+class State {
+  /**
+   * The current state of the interpreter.
+   *
+   * env  ... 'fpgm' or 'prep' or 'glyf'
+   * prog ... the program
+   */
+  constructor (env, prog) {
+    this.env = env
+    this.stack = []
+    this.prog = prog
 
-  switch (env) {
-    case 'glyf' :
-      this.zp0 = this.zp1 = this.zp2 = 1
-      this.rp0 = this.rp1 = this.rp2 = 0
+    switch (env) {
+      case 'glyf':
+        this.zp0 = this.zp1 = this.zp2 = 1
+        this.rp0 = this.rp1 = this.rp2 = 0
       /* fall through */
-    case 'prep' :
-      this.fv = this.pv = this.dpv = xUnitVector
-      this.round = roundToGrid
+      case 'prep':
+        this.fv = this.pv = this.dpv = xUnitVector
+        this.round = roundToGrid
+    }
   }
 }
 
@@ -748,10 +751,10 @@ execGlyph = function (glyph, prepState) {
   return gZone
 }
 
-/*
-* Executes the hinting program for a component of a multi-component glyph
-* or of the glyph itself for a non-component glyph.
-*/
+/**
+ * Executes the hinting program for a component of a multi-component glyph
+ * or of the glyph itself for a non-component glyph.
+ */
 execComponent = function (glyph, state, xScale, yScale) {
   const points = glyph.points || []
   const pLen = points.length
@@ -822,9 +825,9 @@ execComponent = function (glyph, state, xScale, yScale) {
   }
 }
 
-/*
-* Executes the program loaded in state.
-*/
+/**
+ * Executes the program loaded in state.
+ */
 exec = function (state) {
   const prog = state.prog
 
@@ -839,8 +842,7 @@ exec = function (state) {
 
     if (!ins) {
       throw new Error(
-        'unknown instruction: 0x' +
-                Number(prog[state.ip]).toString(16)
+        'unknown instruction: 0x' + Number(prog[state.ip]).toString(16)
       )
     }
 
@@ -890,12 +892,12 @@ exec = function (state) {
   }
 }
 
-/*
-* Initializes the twilight zone.
-*
-* This is only done if a SZPx instruction
-* refers to the twilight zone.
-*/
+/**
+ * Initializes the twilight zone.
+ *
+ * This is only done if a SZPx instruction
+ * refers to the twilight zone.
+ */
 function initTZone (state) {
   const tZone = state.tZone = new Array(state.gZone.length)
 
@@ -905,10 +907,10 @@ function initTZone (state) {
   }
 }
 
-/*
-* Skips the instruction pointer ahead over an IF/ELSE block.
-* handleElse .. if true breaks on matching ELSE
-*/
+/**
+ * Skips the instruction pointer ahead over an IF/ELSE block.
+ * handleElse .. if true breaks on matching ELSE
+ */
 function skip (state, handleElse) {
   const prog = state.prog
   let ip = state.ip
