@@ -33,6 +33,9 @@ import os2 from './tables/os2.js'
 import post from './tables/post.js'
 import meta from './tables/meta.js'
 
+// TODO: temporary fix to deal with requirejs and loadSync tests
+import fs from 'fs'
+
 /**
  * The opentype library.
  * @namespace opentype
@@ -428,7 +431,6 @@ function load (url, callback, opt) {
  * @return {opentype.Font}
  */
 function loadSync (url, opt) {
-  const fs = require('fs')
   const buffer = fs.readFileSync(url)
   return parseBuffer(nodeBufferToArrayBuffer(buffer), opt)
 }
