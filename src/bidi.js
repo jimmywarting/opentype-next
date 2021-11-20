@@ -12,26 +12,7 @@ import arabicRequiredLigatures from './features/arab/arabicRequiredLigatures.js'
 import latinWordCheck from './features/latn/contextCheck/latinWord.js'
 import latinLigature from './features/latn/latinLigatures.js'
 
-/**
- * Register arabic word check
- */
-function registerContextChecker (checkId) {
-  const check = this.contextChecks[`${checkId}Check`]
-  return this.tokenizer.registerContextChecker(
-    checkId, check.startCheck, check.endCheck
-  )
-}
-
-/**
- * Perform pre tokenization procedure then
- * tokenize text input
- */
-function tokenizeText () {
-  registerContextChecker.call(this, 'latinWord')
-  registerContextChecker.call(this, 'arabicWord')
-  registerContextChecker.call(this, 'arabicSentence')
-  return this.tokenizer.tokenize(this.text)
-}
+/** @typedef {import('./font.js').default} Font */
 
 /**
  * Reverse arabic sentence layout
@@ -109,8 +90,8 @@ class Bidi {
    * Create Bidi. features
    * @param {string} baseDir text base direction. value either 'ltr' or 'rtl'
    */
-  constructor (baseDir) {
-    this.baseDir = baseDir || 'ltr'
+  constructor (baseDir = 'ltr') {
+    this.baseDir = baseDir
     this.tokenizer = new Tokenizer()
     this.featuresTags = {}
   }
@@ -125,7 +106,7 @@ class Bidi {
 
   /**
    * Register supported features tags
-   * @param {script} script Script tag
+   * @param {string} script Script tag
    * @param {Array} tags Features tags list
    */
   registerFeatures (script, tags) {
@@ -135,16 +116,14 @@ class Bidi {
     if (!this.featuresTags.hasOwnProperty(script)) {
       this.featuresTags[script] = supportedTags
     } else {
-      this.featuresTags[script] =
-                this.featuresTags[script].concat(supportedTags)
+      this.featuresTags[script] = this.featuresTags[script].concat(supportedTags)
     }
   }
 
   /**
    * Apply GSUB features
-   * @param {Array} tagsList A list of features tags
-   * @param {string} script A script tag
    * @param {Font} font Opentype font instance
+   * @param {Array} features A list of features tags
    */
   applyFeatures (font, features) {
     if (!font) {
@@ -201,9 +180,31 @@ class Bidi {
   processText (text) {
     if (!this.text || this.text !== text) {
       this.setText(text)
-      tokenizeText.call(this)
+      this.#tokenizeText()
       this.applyFeaturesToContexts()
     }
+  }
+
+  /**
+   * Perform pre tokenization procedure then
+   * tokenize text input
+   */
+  #tokenizeText () {
+    this.#registerContextChecker('latinWord')
+    this.#registerContextChecker('arabicWord')
+    this.#registerContextChecker('arabicSentence')
+    return this.tokenizer.tokenize(this.text)
+  }
+
+  /**
+   * Register arabic word check
+   * @param {string} checkId
+   */
+  #registerContextChecker (checkId) {
+    const check = this.contextChecks[`${checkId}Check`]
+    return this.tokenizer.registerContextChecker(
+      checkId, check.startCheck, check.endCheck
+    )
   }
 
   /**
@@ -218,7 +219,7 @@ class Bidi {
 
   /**
    * Get the current state index of each token
-   * @param {text} text An input text
+   * @param {string} text An input text
    */
   getTextGlyphs (text) {
     this.processText(text)
