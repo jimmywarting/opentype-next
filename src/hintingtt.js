@@ -39,27 +39,131 @@ let execComponent
 * There ought to be exactly one
 * for each truetype font that is used for hinting.
 */
-function Hinting (font) {
-  // the font this hinting object is for
-  this.font = font
+class Hinting {
+  constructor (font) {
+    // the font this hinting object is for
+    this.font = font
 
-  this.getCommands = function (hPoints) {
-    return glyf.getPath(hPoints).commands
+    this.getCommands = function (hPoints) {
+      return glyf.getPath(hPoints).commands
+    }
+
+    // cached states
+    this._fpgmState =
+    this._prepState = undefined
+
+    // errorState
+    // 0 ... all okay
+    // 1 ... had an error in a glyf,
+    //       continue working but stop spamming
+    //       the console
+    // 2 ... error at prep, stop hinting at this ppem
+    // 3 ... error at fpeg, stop hinting for this font at all
+    this._errorState = 0
   }
 
-  // cached states
-  this._fpgmState =
-    this._prepState =
-        undefined
+  /**
+   * Executes a glyph program.
+   *
+   * This does the hinting for each glyph.
+   *
+   * @param {number} glyph The glyph to hint.
+   * @param {number} ppem The size the glyph is rendered for.
+   * @return Returns an array of moved points.
+   */
+  exec(glyph, ppem) {
+    if (typeof ppem !== 'number') {
+      throw new Error('Point size is not a number!')
+    }
 
-  // errorState
-  // 0 ... all okay
-  // 1 ... had an error in a glyf,
-  //       continue working but stop spamming
-  //       the console
-  // 2 ... error at prep, stop hinting at this ppem
-  // 3 ... error at fpeg, stop hinting for this font at all
-  this._errorState = 0
+    // Received a fatal error, don't do any hinting anymore.
+    if (this._errorState > 2)
+      return
+
+    const font = this.font
+    let prepState = this._prepState
+
+    if (!prepState || prepState.ppem !== ppem) {
+      let fpgmState = this._fpgmState
+
+      if (!fpgmState) {
+        // Executes the fpgm state.
+        // This is used by fonts to define functions.
+        State.prototype = defaultState
+
+        fpgmState =
+          this._fpgmState =
+          new State('fpgm', font.tables.fpgm)
+
+        fpgmState.funcs = []
+        fpgmState.font = font
+
+        if (exports.DEBUG) {
+          console.log('---EXEC FPGM---')
+          fpgmState.step = -1
+        }
+
+        try {
+          exec(fpgmState)
+        } catch (e) {
+          console.log('Hinting error in FPGM:' + e)
+          this._errorState = 3
+          return
+        }
+      }
+
+      // Executes the prep program for this ppem setting.
+      // This is used by fonts to set cvt values
+      // depending on to be rendered font size.
+      State.prototype = fpgmState
+      prepState =
+        this._prepState =
+        new State('prep', font.tables.prep)
+
+      prepState.ppem = ppem
+
+      // Creates a copy of the cvt table
+      // and scales it to the current ppem setting.
+      const oCvt = font.tables.cvt
+      if (oCvt) {
+        const cvt = prepState.cvt = new Array(oCvt.length)
+        const scale = ppem / font.unitsPerEm
+        for (let c = 0; c < oCvt.length; c++) {
+          cvt[c] = oCvt[c] * scale
+        }
+      } else {
+        prepState.cvt = []
+      }
+
+      if (exports.DEBUG) {
+        console.log('---EXEC PREP---')
+        prepState.step = -1
+      }
+
+      try {
+        exec(prepState)
+      } catch (e) {
+        if (this._errorState < 2) {
+          console.log('Hinting error in PREP:' + e)
+        }
+        this._errorState = 2
+      }
+    }
+
+    if (this._errorState > 1)
+      return
+
+    try {
+      return execGlyph(glyph, prepState)
+    } catch (e) {
+      if (this._errorState < 1) {
+        console.log('Hinting error:' + e)
+        console.log('Note: further hinting errors are silenced')
+      }
+      this._errorState = 1
+      return undefined
+    }
+  }
 }
 
 /*
@@ -69,45 +173,51 @@ function roundOff (v) {
   return v
 }
 
-/*
-* Rounding to grid.
-*/
+/**
+ * Rounding to grid.
+ * @param {number} v
+ */
 function roundToGrid (v) {
   // Rounding in TT is supposed to "symmetrical around zero"
   return Math.sign(v) * Math.round(Math.abs(v))
 }
 
-/*
-* Rounding to double grid.
-*/
+/**
+ * Rounding to double grid.
+ * @param {number} v
+ */
 function roundToDoubleGrid (v) {
   return Math.sign(v) * Math.round(Math.abs(v * 2)) / 2
 }
 
-/*
-* Rounding to half grid.
-*/
+/**
+ * Rounding to half grid.
+ * @param {number} v
+ */
 function roundToHalfGrid (v) {
   return Math.sign(v) * (Math.round(Math.abs(v) + 0.5) - 0.5)
 }
 
-/*
-* Rounding to up to grid.
-*/
+/**
+ * Rounding to up to grid.
+ * @param {number} v
+ */
 function roundUpToGrid (v) {
   return Math.sign(v) * Math.ceil(Math.abs(v))
 }
 
-/*
-* Rounding to down to grid.
-*/
+/**
+ * Rounding to down to grid.
+ * @param {number} v
+ */
 function roundDownToGrid (v) {
   return Math.sign(v) * Math.floor(Math.abs(v))
 }
 
-/*
-* Super rounding.
-*/
+/**
+ * Super rounding.
+ * @param {number} v
+ */
 const roundSuper = function (v) {
   const period = this.srPeriod
   const phase = this.srPhase
@@ -131,9 +241,9 @@ const roundSuper = function (v) {
   return v * sign
 }
 
-/*
-* Unit vector of x-axis.
-*/
+/**
+ * Unit vector of x-axis.
+ */
 const xUnitVector = {
   x: 1,
 
@@ -553,108 +663,6 @@ function State (env, prog) {
   }
 }
 
-/*
-* Executes a glyph program.
-*
-* This does the hinting for each glyph.
-*
-* Returns an array of moved points.
-*
-* glyph: the glyph to hint
-* ppem: the size the glyph is rendered for
-*/
-Hinting.prototype.exec = function (glyph, ppem) {
-  if (typeof ppem !== 'number') {
-    throw new Error('Point size is not a number!')
-  }
-
-  // Received a fatal error, don't do any hinting anymore.
-  if (this._errorState > 2) return
-
-  const font = this.font
-  let prepState = this._prepState
-
-  if (!prepState || prepState.ppem !== ppem) {
-    let fpgmState = this._fpgmState
-
-    if (!fpgmState) {
-      // Executes the fpgm state.
-      // This is used by fonts to define functions.
-      State.prototype = defaultState
-
-      fpgmState =
-            this._fpgmState =
-                new State('fpgm', font.tables.fpgm)
-
-      fpgmState.funcs = []
-      fpgmState.font = font
-
-      if (exports.DEBUG) {
-        console.log('---EXEC FPGM---')
-        fpgmState.step = -1
-      }
-
-      try {
-        exec(fpgmState)
-      } catch (e) {
-        console.log('Hinting error in FPGM:' + e)
-        this._errorState = 3
-        return
-      }
-    }
-
-    // Executes the prep program for this ppem setting.
-    // This is used by fonts to set cvt values
-    // depending on to be rendered font size.
-
-    State.prototype = fpgmState
-    prepState =
-        this._prepState =
-            new State('prep', font.tables.prep)
-
-    prepState.ppem = ppem
-
-    // Creates a copy of the cvt table
-    // and scales it to the current ppem setting.
-    const oCvt = font.tables.cvt
-    if (oCvt) {
-      const cvt = prepState.cvt = new Array(oCvt.length)
-      const scale = ppem / font.unitsPerEm
-      for (let c = 0; c < oCvt.length; c++) {
-        cvt[c] = oCvt[c] * scale
-      }
-    } else {
-      prepState.cvt = []
-    }
-
-    if (exports.DEBUG) {
-      console.log('---EXEC PREP---')
-      prepState.step = -1
-    }
-
-    try {
-      exec(prepState)
-    } catch (e) {
-      if (this._errorState < 2) {
-        console.log('Hinting error in PREP:' + e)
-      }
-      this._errorState = 2
-    }
-  }
-
-  if (this._errorState > 1) return
-
-  try {
-    return execGlyph(glyph, prepState)
-  } catch (e) {
-    if (this._errorState < 1) {
-      console.log('Hinting error:' + e)
-      console.log('Note: further hinting errors are silenced')
-    }
-    this._errorState = 1
-    return undefined
-  }
-}
 
 /*
 * Executes the hinting program for a glyph.

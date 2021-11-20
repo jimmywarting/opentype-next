@@ -41,7 +41,7 @@ class Substitution extends Layout {
 
   /**
    * Create a default GSUB table.
-   * @return {Object} gsub - The GSUB table.
+   * @return {Object} GSUB table.
    */
   createDefaultTable () {
     // Generate a default empty GSUB table with just a DFLT script and dflt lang sys.
